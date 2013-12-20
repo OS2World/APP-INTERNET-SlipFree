@@ -1,0 +1,130 @@
+
+                             SlipFree
+                      Version 1.0, 29-Nov-94
+  Requests COM port from SLIP, runs a program, returns COM port to SLIP
+
+              mikel@networx.com <Mike Lempriere>
+
+------------------------------------------------------------------------------
+
+WHAT IT DOES:
+
+  SLIPFREE is a simple commandline program that facilitates COM port
+  access through SL/IP.
+
+  SLIPFREE asks SLIP for access to the com port, then, once access is
+  granted, starts the program (supplied as an arg) that wants to use the
+  COM port.  Lastly, when the program ends, SLIPFREE then tells SLIP that
+  it's done, thus SLIP can go ahead and take back the COM port.
+
+  This means you can start up all your SLIP networking deamons once, yet
+  use you modem for other things when you're not actually doing SLIP.
+
+BIG UGLY CAVEAT:
+
+  SLIP does not completely release the COM port.  Basically, all this
+  program does is make SLIP promise not to read/write the COM port
+  until we tell it we're done.  Most communications programs do an
+  exclusive open of the COM port, thus they will not tolerate SLIP's
+  having kept it open, even though SLIP won't be messing with it.  I
+  consider this poor design in SLIP, but there may be a reason for it
+  that I don't understand.
+
+  In other words, this program may not have the desired effect; as an
+  example you will probably still have to shutdown SLIP fully before
+  being able to run a terminal emulator program.
+
+  I've tested LOGICOMM this way; LOGICOMM demands exclusive access to
+  the COM port, thus will not run under SLIPFREE.  Please let me know if
+  you do find comm programs that do work this way <mikel@networx.com>.
+
+------------------------------------------------------------------------------
+
+INSTALLATION:
+
+  Merely unpack SLIPFREE.ZIP, then move SLIPFREE.EXE to a dir on your path.
+  I'd recommend moving SLIPFREE.TXT (this file) to the same dir so you can
+  find it later (unless you have a dir of loose docs, put it there).
+  SLIPFREE is a C++ program; the complete source file SLIPFREE.CPP is
+  included in the zip file in case you're inclined to look at the source,
+  as is a simple Makefile for building it.  They are not needed to run the
+  program.
+  There are no other support files used or needed for running or building.
+
+------------------------------------------------------------------------------
+
+LICENSE JUNK:
+
+  There are no requirements for using this program.
+
+  Of course there are also no warranties.
+
+  I do ask, however, that if you have Internet e-mail access, you drop me
+  a line of thanks (or criticism if you have suggestions/bug-reports).
+  Also indicate in your mail if you'd like to be notified of any future
+  renditions.
+
+  If you find a bug, please e-mail me about it.  If you make any mods to
+  the source, please e-mail them to me so that I can incorporate them into
+  any future renditions.  If you have any suggestions for improvements to
+  SLIPFREE, I'd especially like to hear them, e-mail me; mikel@networx.com.
+
+------------------------------------------------------------------------------
+
+USAGE:
+
+  I wrote this thing, as I have a nifty modem that gets Caller ID info,
+  and has voice playback/record capablities.  I'm using my computer as a
+  voicemail system, as well as an Internet connection.
+
+  So when I'm not running SLIP, I want a program of mine to be running,
+  talking to the modem, acting on the modem info like CallerID, Fax rcv,
+  Voice playback, etc.
+
+  However, SLIP wants to control the modem.  I wouldn't mind just stopping
+  SLIP, but when you do that, a bunch of the other daemons croak, ie.
+  SENDMAIL and LAMPOP.  This means that to start my home control stuff,
+  I have to blow away all the TCP/IP daemons, and restart them again the
+  next time.
+
+  SLIPFREE allows me to run request the COM port and run my program,
+  merely putting SLIP on hold until I want to reestablish the SLIP
+  connection, leaving the TCP/IP deamons all passively running.
+
+  As it also knows how to wait until slip comes up, it can also be used to
+  run a program once SLIP has come up (similar to SLIPWAIT).
+
+------------------------------------------------------------------------------
+
+COMMAND SUMMARY:
+
+  Usage: SLIPFREE [switches] command [command args]
+
+  SWITCHES:
+  -?, -h	This help screen.
+  -w#		Wait up to '#' seconds for SLIP to start.
+
+  'command' will be executed as a command line,
+  with any remaining args passed as it's args.
+
+  EXAMPLES:
+      SLIPFREE commn
+          runs 'commn' without your having to shutdown or restart slip.
+
+------------------------------------------------------------------------------
+
+PORTING:
+
+  The program is written in C++, although it's almost entirely C.  To pull
+  the C++ness out of it and compile it under start C would be a trivial
+  matter.
+
+  The makefile has both an IBM and a Borland section (IBM default).  To
+  setup for Borland, merely edit the makefile commenting out the IBM lines
+  and uncommenting out the Borland lines.
+
+  It compiles warning-free under IBM CSET++ 2.0 and Borland C++ 1.00.
+  If you modify it, or port it to a compiler other than these two, please
+  let me know <mikel@networx.com>.
+
+------------------------------------------------------------------------------
